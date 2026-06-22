@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RallyUp — Alex Alpert Content Intake</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #3D68F5;
+    --accent-1: #7B6BE6;
+    --accent-2: #2DD4A8;
+    --dark: #0F1923;
+    --card: #161F2C;
+    --border: rgba(255,255,255,0.08);
+    --gray: #8896A6;
+    --white: #F1F5F9;
+    --radius: 14px;
+  }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--dark);
+    color: var(--white);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  .header {
+    padding: 32px 24px 0;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .logo-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin-bottom: 20px;
+  }
+  .logo-ru {
+    width: 48px; height: 48px;
+    background: linear-gradient(180deg, var(--primary), var(--accent-1));
+    border-radius: var(--radius);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .logo-ru svg { width: 26px; height: 26px; }
+  .logo-x {
+    font-size: 16px; color: rgba(255,255,255,0.25); font-weight: 500;
+  }
+  .logo-brand {
+    width: 48px; height: 48px;
+    background: white;
+    border-radius: var(--radius);
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 6px;
+    color: #1a1a2e;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.5px;
+  }
+  .header h1 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+  .header p { color: var(--gray); font-size: 15px; max-width: 480px; margin: 0 auto 8px; }
+  .time-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(45,212,168,0.1); border: 1px solid rgba(45,212,168,0.25);
+    color: #2DD4A8; font-size: 13px; font-weight: 600;
+    padding: 6px 16px; border-radius: 50px; margin-top: 12px;
+  }
+
+  .progress-wrap { max-width: 640px; margin: 28px auto 0; padding: 0 24px; }
+  .progress-bar {
+    height: 4px; background: rgba(255,255,255,0.06);
+    border-radius: 4px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--accent-1));
+    border-radius: 4px; transition: width 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  .progress-label {
+    display: flex; justify-content: space-between; margin-top: 8px;
+    font-size: 12px; color: var(--gray); font-weight: 500;
+  }
+
+  .container { max-width: 640px; margin: 0 auto; padding: 24px 24px 120px; }
+
+  .section { display: none; animation: fadeIn 0.4s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--primary); margin-bottom: 8px;
+  }
+  .block-label {
+    display: inline-block;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--accent-2);
+    background: rgba(45,212,168,0.08);
+    border: 1px solid rgba(45,212,168,0.2);
+    padding: 4px 10px; border-radius: 50px;
+    margin-bottom: 14px;
+  }
+  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .section-desc { font-size: 14px; color: var(--gray); margin-bottom: 28px; }
+
+  .question { margin-bottom: 28px; }
+  .q-label {
+    font-size: 15px; font-weight: 600; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .q-hint { font-size: 13px; color: var(--gray); margin-bottom: 10px; font-style: italic; }
+
+  textarea, input[type="text"], input[type="email"] {
+    width: 100%; background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px; color: var(--white);
+    font-family: inherit; font-size: 15px; resize: vertical;
+    transition: border-color 0.2s; outline: none;
+  }
+  textarea:focus, input[type="text"]:focus, input[type="email"]:focus {
+    border-color: rgba(74,156,245,0.5);
+  }
+  textarea { min-height: 88px; }
+  textarea.tall { min-height: 160px; }
+  textarea.x-tall { min-height: 220px; }
+
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 12px 14px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .radio-row:hover { border-color: rgba(74,156,245,0.4); background: rgba(74,156,245,0.06); }
+  .radio-row.selected {
+    background: rgba(74,156,245,0.10); border-color: var(--primary);
+  }
+  .radio-row input[type="radio"] {
+    margin-top: 4px; accent-color: var(--primary);
+  }
+  .radio-row .rl { font-size: 14px; font-weight: 500; }
+
+  .inline-text { margin-top: 10px; display: none; }
+  .inline-text.show { display: block; }
+
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(15,25,35,0.92); backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border); padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 640px; margin: 0 auto;
+    z-index: 100;
+  }
+  @media(min-width:641px) {
+    .nav-bar { left: 50%; transform: translateX(-50%); border-radius: 20px 20px 0 0; }
+  }
+  .btn {
+    padding: 12px 28px; border-radius: 12px; font-size: 15px;
+    font-weight: 600; cursor: pointer; border: none;
+    font-family: inherit; transition: all 0.2s;
+  }
+  .btn-ghost { background: transparent; color: var(--gray); }
+  .btn-ghost:hover { color: var(--white); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent-1));
+    color: white;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-submit {
+    background: linear-gradient(135deg, #2DD4A8, #1DB88E);
+    color: white;
+  }
+  .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  .welcome { text-align: center; padding: 40px 0 0; }
+  .welcome h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+  .welcome p { color: var(--gray); font-size: 16px; max-width: 460px; margin: 0 auto 32px; line-height: 1.65; }
+  .welcome-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    text-align: left; margin-bottom: 32px;
+  }
+  .wc {
+    padding: 16px; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .wc h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .wc p { font-size: 12px; color: var(--gray); margin: 0; }
+
+  .done { text-align: center; padding: 60px 0; }
+  .done .logo-brand {
+    width: 64px; height: 64px; margin-bottom: 20px;
+    border-radius: var(--radius); font-size: 20px;
+  }
+  .done h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .done p { color: var(--gray); font-size: 16px; max-width: 420px; margin: 0 auto; line-height: 1.6; }
+
+  @media(max-width:480px) {
+    .welcome-cards { grid-template-columns: 1fr; }
+    .header h1 { font-size: 22px; }
+    .section-title { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-row">
+    <div class="logo-ru">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+    </div>
+    <span class="logo-x">x</span>
+    <div class="logo-brand">AA</div>
+  </div>
+  <h1>Pulling the Ferrari out of the garage</h1>
+  <p>Voice, audience, and the parts of the story we can't get from the outside.</p>
+  <div class="time-badge">Takes about 12 minutes</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label">
+    <span id="sectionLabel">Welcome</span>
+    <span id="progressPct">0%</span>
+  </div>
+</div>
+
+<div class="container" id="app"></div>
+
+<div class="nav-bar">
+  <button class="btn btn-ghost" id="btnBack" onclick="goBack()">Back</button>
+  <button class="btn btn-primary" id="btnNext" onclick="goNext()">Get Started</button>
+</div>
+
+<script>
+  // ============================================================
+  // Session + Apps Script wiring
+  // ============================================================
+  var SESSION_ID = (Date.now().toString(36) + Math.random().toString(36).substr(2, 9));
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzM7cAsGsA0NI5rFQVKOAPQHzEHsuc083jay00m1N61t1TInDzrvSvkPdSCyxiAtkWXNQ/exec';
+  var state = {};
+
+  function sendEvent(event, fields) {
+    Object.assign(state, fields || {});
+    state.event = event;
+    state.session_id = SESSION_ID;
+    state.timestamp = new Date().toISOString();
+    try {
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(state),
+        redirect: 'follow'
+      });
+    } catch (e) { /* network noise — swallow */ }
+  }
+
+  // ============================================================
+  // Sections — 11 questions across 3 blocks
+  //   Block A · Voice & Audience    → Q1, Q2
+  //   Block B · POV + Origin        → Q3, Q4
+  //   Block C · Filling the Gaps    → Q5–Q11 (the gaps only Alex can answer)
+  // ============================================================
+  var sections = [
+    // 0: Welcome
+    { id: 'welcome', label: 'Welcome', type: 'welcome', render: function () {
+      return ''
+        + '<div class="welcome">'
+        + '  <h2>Hey Alex</h2>'
+        + '  <p>You called it yourself: the Ferrari\'s been in the garage. Your profile gave us the spine — Shyft, the moving industry, Serbia, the new thing. This fills the parts we can\'t see from the outside, and the lines you only say to someone you trust with the keys. First instinct, no editing. We don\'t publish a word without your sign-off.</p>'
+        + '  <div class="welcome-cards">'
+        + '    <div class="wc"><h4>11 short questions</h4><p>3 blocks: voice, POV, the gaps</p></div>'
+        + '    <div class="wc"><h4>About 12 minutes</h4><p>Coffee-length</p></div>'
+        + '    <div class="wc"><h4>You drive</h4><p>Nothing goes out without your OK</p></div>'
+        + '    <div class="wc"><h4>Stays between us</h4><p>Only your content team sees it</p></div>'
+        + '  </div>'
+        + '</div>';
+    }},
+
+    // ─── BLOCK A · Voice & Audience ───────────────────────────────
+
+    // 1: Q1 — Who do you want to reach? / waitlist ICP (open)
+    { id: 'q1', label: 'Voice & Audience', type: 'question', qNum: 1, qKey: 'q1', render: function () {
+      return ''
+        + '<div class="block-label">Block A · Voice &amp; Audience</div>'
+        + '<div class="section-label">Question 1 of 11</div>'
+        + '<div class="section-title">Who do you want to reach on LinkedIn?</div>'
+        + '<div class="section-desc">Not your whole network — the inner circle. And specifically: who are the ~1,000 founders / operators you\'d want on the waitlist for the new thing?</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Describe them in your own words.</div>'
+        + '  <div class="q-hint">Role, stage, geography, what they\'re wrestling with. Paint the 3 people you\'d be thrilled to see sign up. "Seed-to-Series-B technical founders in the US/Balkans drowning in CEO admin" lands; "founders" doesn\'t.</div>'
+        + '  <textarea class="tall" data-key="q1" placeholder="e.g., Technical founders and CEOs at seed–Series B who already feel the leverage AI gives them but are still operating like it\'s 2015..."></textarea>'
+        + '</div>';
+    }},
+
+    // 2: Q2 — How do you want them to see YOU? (radio + Other)
+    { id: 'q2', label: 'Voice & Audience', type: 'question', qNum: 2, qKey: 'q2', render: function () {
+      return ''
+        + '<div class="block-label">Block A · Voice &amp; Audience</div>'
+        + '<div class="section-label">Question 2 of 11</div>'
+        + '<div class="section-title">How do you want them to see <em>you</em>?</div>'
+        + '<div class="section-desc">When someone describes you to a peer, what\'s the line you want them to use? Options pulled from your story. Pick one or write your own.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Choose the closest framing.</div>'
+        + '  <div class="radio-group" data-key="q2">'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="Operator who came up from the truck"><span class="rl"><strong>The operator who came up from the truck</strong> →drove the trucks, ran the 3rd-largest van line, then built the tech that fixed the industry</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="Builder-investor who finds the leverage"><span class="rl"><strong>The builder-investor who finds the unfair advantage</strong> →the guy who walks into any deal and creates leverage / arbitrage no one else saw</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="First-principles contrarian"><span class="rl"><strong>The first-principles contrarian</strong> →respects the basics, does the jobs nobody wants, calls BS on the Valley playbook</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="AI-native operator building the future of the CEO"><span class="rl"><strong>The AI-native operator building the future of the CEO</strong> →the person re-architecting how CEOs actually work</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q2" value="Other"><span class="rl"><strong>Other</strong> →write your own framing</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Other">'
+        + '    <textarea data-key="q2_other" placeholder="How do you want to be seen, in your own words?"></textarea>'
+        + '  </div>'
+        + '</div>';
+    }},
+
+    // ─── BLOCK B · POV + Origin ───────────────────────────────────
+
+    // 3: Q3 — Name your POV / framework (radio + write-in)
+    { id: 'q3', label: 'POV + Origin', type: 'question', qNum: 3, qKey: 'q3', render: function () {
+      return ''
+        + '<div class="block-label">Block B · POV + Origin</div>'
+        + '<div class="section-label">Question 3 of 11</div>'
+        + '<div class="section-title">Your big POV — does it have a name yet?</div>'
+        + '<div class="section-desc">You said it on the call: "in a post-AI world, the only thing that matters is relationships and trust," and CEOs "still operate like Mad Men in the 1960s." The sharpest version of that belief is your flag to plant. What do we call it?</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Pick a direction, or name it yourself.</div>'
+        + '  <div class="radio-group" data-key="q3">'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="Trust is the last moat"><span class="rl"><strong>"Trust is the last moat"</strong> →post-AI, relationships + authenticity are the only durable edge</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="The 100x CEO"><span class="rl"><strong>"The 100x CEO"</strong> →CEOs should train and tool up like elite athletes, not Mad Men</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="Leverage is everything"><span class="rl"><strong>"Leverage / arbitrage is everything"</strong> →every edge is an unfair-advantage you engineer</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="I have my own name"><span class="rl"><strong>I have my own name for it</strong> →let me give you the phrase</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q3" value="Haven\'t named it yet"><span class="rl"><strong>Haven\'t named it yet</strong> →help me find it</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="I have my own name">'
+        + '    <textarea data-key="q3_other" placeholder="What\'s the phrase, and what are its 2-3 core ideas?"></textarea>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Haven\'t named it yet">'
+        + '    <textarea data-key="q3_other" placeholder="In a sentence: what\'s the belief you\'d most want to be known for?"></textarea>'
+        + '  </div>'
+        + '</div>';
+    }},
+
+    // 4: Q4 — The origin moment (open, x-tall)
+    { id: 'q4', label: 'POV + Origin', type: 'question', qNum: 4, qKey: 'q4', render: function () {
+      return ''
+        + '<div class="block-label">Block B · POV + Origin</div>'
+        + '<div class="section-label">Question 4 of 11</div>'
+        + '<div class="section-title">The moment that made you who you are.</div>'
+        + '<div class="section-desc">This is the one we\'ll mine for years. The moving industry, "the Hammer," driving trucks, building Shyft, the hiring gauntlet, the reinvention from West Virginia to the Balkans. Tell it the way you\'d tell a friend, not a journalist — the room, the person, what it cost.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Tell the story.</div>'
+        + '  <div class="q-hint">Prompts if you\'re stuck: the Hammer and his "blind chicken" sign; the day you went from driver to running a van line; the moment the density algorithm first worked; flying into Belgrade to hire 150 people at hotel tables on a 90-second clock; why you left it all for Serbia and the water. Start anywhere. Don\'t edit while writing.</div>'
+        + '  <textarea class="x-tall" data-key="q4" placeholder="Start anywhere. First pass. Get it out."></textarea>'
+        + '</div>';
+    }},
+
+    // ─── BLOCK C · Filling the Gaps ───────────────────────────────
+
+    // 5: Q5 — The new company clearance (radio + reveal)
+    { id: 'q5', label: 'Filling the Gaps', type: 'question', qNum: 5, qKey: 'q5', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 5 of 11</div>'
+        + '<div class="section-title">The new "100x" thing — what can we say publicly?</div>'
+        + '<div class="section-desc">We will NOT name it until you clear it. We just need to know where the line is today so we can build anticipation without crossing it.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">How much can the content reveal right now?</div>'
+        + '  <div class="radio-group" data-key="q5">'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Name it"><span class="rl"><strong>Name it</strong> →the company/product name is fair game</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Category only, no name"><span class="rl"><strong>Category only</strong> →talk about the problem space + "building something," no name yet</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Stealth, just build the audience"><span class="rl"><strong>Full stealth</strong> →no product talk; just rebuild my presence and audience for now</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q5" value="Other"><span class="rl"><strong>Other</strong> →there\'s a nuance</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Name it">'
+        + '    <textarea data-key="q5_other" placeholder="What\'s the name, and what\'s the one-line description you\'re comfortable with?"></textarea>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Other">'
+        + '    <textarea data-key="q5_other" placeholder="Where exactly is the line?"></textarea>'
+        + '  </div>'
+        + '</div>';
+    }},
+
+    // 6: Q6 — The cliffhanger + re-entry (open, tall)
+    { id: 'q6', label: 'Filling the Gaps', type: 'question', qNum: 6, qKey: 'q6', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 6 of 11</div>'
+        + '<div class="section-title">The cliffhanger — "what\'s up with Alex right now?"</div>'
+        + '<div class="section-desc">You said you ended your public story on a cliffhanger 3-4 years ago and people genuinely wonder where you went. The re-entry is yours to design — we\'ll execute it your way.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">In your words: what was the cliffhanger, and how do you want to come back?</div>'
+        + '  <div class="q-hint">What do people THINK happened vs. what actually happened? And do you want to address the gap head-on ("here\'s where I\'ve been"), or just start fresh and let the work talk?</div>'
+        + '  <textarea class="tall" data-key="q6" placeholder="The story people half-know is... / What I actually want to do is..."></textarea>'
+        + '</div>';
+    }},
+
+    // 7: Q7 — Vulnerability line (radio + reveal)
+    { id: 'q7', label: 'Filling the Gaps', type: 'question', qNum: 7, qKey: 'q7', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 7 of 11</div>'
+        + '<div class="section-title">How raw do you want to go?</div>'
+        + '<div class="section-desc">You said it yourself — you\'re wary of the "edge of vulnerability" and the haters. There\'s no right answer; we just need to know your line so we never cross it.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Where\'s your comfort line on personal / vulnerable content?</div>'
+        + '  <div class="radio-group" data-key="q7">'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="All in"><span class="rl"><strong>All in</strong> →the lows, the doubts, the real stuff — that\'s the good content</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="Selective"><span class="rl"><strong>Selective</strong> →some personal, but I want to approve each one and ease into it</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="Keep it professional"><span class="rl"><strong>Keep it mostly professional</strong> →story + operator lessons, light on the personal for now</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q7" value="Other"><span class="rl"><strong>Other</strong> →let me draw the line myself</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Selective">'
+        + '    <textarea data-key="q7_other" placeholder="Give me a \'yes, share that\' example and a \'never\' example."></textarea>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Other">'
+        + '    <textarea data-key="q7_other" placeholder="Where\'s the line for you?"></textarea>'
+        + '  </div>'
+        + '</div>';
+    }},
+
+    // 8: Q8 — Shyft figures validation (radio confirmation)
+    { id: 'q8', label: 'Filling the Gaps', type: 'question', qNum: 8, qKey: 'q8', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 8 of 11</div>'
+        + '<div class="section-title">The Shyft numbers — are these exactly right?</div>'
+        + '<div class="section-desc">Numbers are your credibility currency, so we want them precise before anything publishes. From the call: ~$40M raised all-in, 500K+ customers, half a billion transactions in two years, partnerships with Amazon, Google, AARP, exit ~2022.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Are those figures accurate to use publicly?</div>'
+        + '  <div class="radio-group" data-key="q8">'
+        + '    <label class="radio-row"><input type="radio" name="q8" value="Still true"><span class="rl">All accurate → use them as-is</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q8" value="Changed"><span class="rl">Some are off → let me correct them</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q8" value="Not sure"><span class="rl">Not sure / don\'t want some of them public</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Changed">'
+        + '    <textarea data-key="q8_changed" placeholder="What are the correct figures? (raised, customers, transactions, partners, exit year)"></textarea>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Not sure">'
+        + '    <textarea data-key="q8_changed" placeholder="Which ones should we hold back or double-check?"></textarea>'
+        + '  </div>'
+        + '</div>';
+    }},
+
+    // 9: Q9 — A take that would get you hate (open)
+    { id: 'q9', label: 'Filling the Gaps', type: 'question', qNum: 9, qKey: 'q9', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 9 of 11</div>'
+        + '<div class="section-title">A take you believe that would get you hate.</div>'
+        + '<div class="section-desc">Your best content lives on the edge of your real opinions — the stuff most LinkedIn would argue with. You clearly have these (the Valley outsiders, venture skepticism, "do the jobs nobody wants").</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">What\'s a belief you hold that would get pushback — but you\'re sure you\'re right?</div>'
+        + '  <div class="q-hint">Could be on venture, hiring, AI, work, the moving industry, the Valley. The more specific and lived, the better.</div>'
+        + '  <textarea data-key="q9" placeholder="Most people think X. I think they\'re dead wrong, and here\'s why..."></textarea>'
+        + '</div>';
+    }},
+
+    // 10: Q10 — Consent & boundaries (open, tall)
+    { id: 'q10', label: 'Filling the Gaps', type: 'question', qNum: 10, qKey: 'q10', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 10 of 11</div>'
+        + '<div class="section-title">Boundaries — what\'s off-limits, who\'s in, who\'s out?</div>'
+        + '<div class="section-desc">Protecting the asset. We want to know the no-go zones up front, and the people you\'d love us to feature or tag.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">Anything fully off-limits, and any people to never name (or to definitely tag)?</div>'
+        + '  <div class="q-hint">Think: the defense funds / specific investments, the WeWork-room story, anyone from the hiring days (e.g., is "Nadja" OK to name?), geopolitics beyond your own heritage. And the flip side: people you\'d love to bring into the content.</div>'
+        + '  <textarea class="tall" data-key="q10" placeholder="Off-limits: ... / Never name: ... / Would love to feature or tag: ..."></textarea>'
+        + '</div>';
+    }},
+
+    // 11: Q11 — Venture vs bootstrap signal (radio + Other)
+    { id: 'q11', label: 'Filling the Gaps', type: 'question', qNum: 11, qKey: 'q11', render: function () {
+      return ''
+        + '<div class="block-label">Block C · Filling the Gaps</div>'
+        + '<div class="section-label">Question 11 of 11</div>'
+        + '<div class="section-title">Should the content lean venture, or bootstrap-community?</div>'
+        + '<div class="section-desc">You\'re venture-skeptical but know the new thing might be bigger than bootstrapping. The posture we project changes who shows up.</div>'
+        + '<div class="question">'
+        + '  <div class="q-label">What energy should the content carry about the new company?</div>'
+        + '  <div class="radio-group" data-key="q11">'
+        + '    <label class="radio-row"><input type="radio" name="q11" value="Bootstrap / community-first"><span class="rl"><strong>Bootstrap / community-first</strong> →build the waitlist + the movement, independent of venture</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q11" value="Venture-backed ambition"><span class="rl"><strong>Venture-backed ambition</strong> →signal this is a big, fundable swing</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q11" value="Deliberately ambiguous"><span class="rl"><strong>Keep it ambiguous</strong> →don\'t signal either way yet</span></label>'
+        + '    <label class="radio-row"><input type="radio" name="q11" value="Other"><span class="rl"><strong>Other</strong> →let me explain</span></label>'
+        + '  </div>'
+        + '  <div class="inline-text" data-reveal-for="Other">'
+        + '    <textarea data-key="q11_other" placeholder="What posture do you want to project?"></textarea>'
+        + '  </div>'
+        + '</div>';
+    }},
+
+    // Submit — close-out screen
+    { id: 'submit', label: 'Submit', type: 'submit', render: function () {
+      return ''
+        + '<div class="section-label">Final step</div>'
+        + '<div class="section-title">Thanks for the time, Alex.</div>'
+        + '<div class="section-desc">That\'s everything we needed to start. Hit submit and we\'ll get to work — nothing publishes without your sign-off. Let\'s pull the Ferrari out.</div>';
+    }},
+
+    // Confirmation after submit
+    { id: 'done', label: 'Done', type: 'done', render: function () {
+      return ''
+        + '<div class="done">'
+        + '  <div class="logo-brand">AA</div>'
+        + '  <h2>All set.</h2>'
+        + '  <p>Your answers landed. We\'ll follow up with the first drafts soon — your call on every one.</p>'
+        + '</div>';
+    }}
+  ];
+
+  // ============================================================
+  // Renderer
+  // ============================================================
+  var current = 0;
+  var answers = {};
+  var startedSent = false;
+
+  function render() {
+    var app = document.getElementById('app');
+    app.innerHTML = '<div class="section active">' + sections[current].render() + '</div>';
+
+    app.querySelectorAll('[data-key]').forEach(function (el) {
+      var k = el.dataset.key;
+      if (answers[k] === undefined) return;
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+        el.value = answers[k];
+      } else if (el.classList.contains('radio-group')) {
+        var radios = el.querySelectorAll('input[type="radio"]');
+        radios.forEach(function (r) {
+          if (r.value === answers[k]) {
+            r.checked = true;
+            r.closest('.radio-row').classList.add('selected');
+          }
+        });
+      }
+    });
+
+    app.querySelectorAll('.radio-group').forEach(function (group) {
+      var radios = group.querySelectorAll('input[type="radio"]');
+      var reveals = group.parentElement.querySelectorAll('[data-reveal-for]');
+      radios.forEach(function (r) {
+        r.addEventListener('change', function () {
+          group.querySelectorAll('.radio-row').forEach(function (row) { row.classList.remove('selected'); });
+          r.closest('.radio-row').classList.add('selected');
+          reveals.forEach(function (revealHost) {
+            var trigger = revealHost.dataset.revealFor;
+            if (r.value === trigger) revealHost.classList.add('show');
+            else revealHost.classList.remove('show');
+          });
+          saveAll();
+        });
+      });
+      var checked = group.querySelector('input[type="radio"]:checked');
+      if (checked) {
+        reveals.forEach(function (revealHost) {
+          if (checked.value === revealHost.dataset.revealFor) revealHost.classList.add('show');
+        });
+      }
+    });
+
+    app.querySelectorAll('textarea, input[type="text"], input[type="email"]').forEach(function (el) {
+      el.addEventListener('input', saveAll);
+    });
+
+    updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function saveAll() {
+    var app = document.getElementById('app');
+    app.querySelectorAll('[data-key]').forEach(function (el) {
+      var k = el.dataset.key;
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+        answers[k] = el.value;
+      } else if (el.classList.contains('radio-group')) {
+        var checked = el.querySelector('input[type="radio"]:checked');
+        answers[k] = checked ? checked.value : '';
+      }
+    });
+  }
+
+  function updateUI() {
+    var totalSteps = sections.length - 2;
+    var pct;
+    if (current === 0) pct = 0;
+    else if (current >= sections.length - 1) pct = 100;
+    else pct = Math.round((current / totalSteps) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+    document.getElementById('sectionLabel').textContent = sections[current].label;
+
+    var back = document.getElementById('btnBack');
+    var next = document.getElementById('btnNext');
+    var navBar = document.querySelector('.nav-bar');
+
+    next.style.display = '';
+    back.style.display = '';
+    navBar.style.display = '';
+
+    back.style.visibility = current === 0 ? 'hidden' : 'visible';
+
+    var s = sections[current];
+    if (s.type === 'welcome') {
+      next.textContent = 'Get Started';
+      next.className = 'btn btn-primary';
+    } else if (s.type === 'submit') {
+      next.textContent = 'Submit';
+      next.className = 'btn btn-submit';
+    } else if (s.type === 'done') {
+      navBar.style.display = 'none';
+    } else {
+      next.textContent = 'Continue';
+      next.className = 'btn btn-primary';
+    }
+  }
+
+  function goNext() {
+    saveAll();
+    var s = sections[current];
+
+    if (s.type === 'welcome') {
+      if (!startedSent) {
+        sendEvent('Started', {});
+        startedSent = true;
+      }
+    } else if (s.type === 'question') {
+      var payload = {};
+      payload[s.qKey] = answers[s.qKey] || '';
+      var otherKey = s.qKey + '_other';
+      if (answers[otherKey]) payload[otherKey] = answers[otherKey];
+      var changedKey = s.qKey + '_changed';
+      if (answers[changedKey]) payload[changedKey] = answers[changedKey];
+      sendEvent('Q' + s.qNum + ' answered', payload);
+    } else if (s.type === 'submit') {
+      sendEvent('Submitted', {});
+    }
+
+    if (current < sections.length - 1) {
+      current++;
+      render();
+    }
+  }
+
+  function goBack() {
+    saveAll();
+    if (current > 0) { current--; render(); }
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.metaKey) goNext();
+  });
+
+  render();
+</script>
+</body>
+</html>
